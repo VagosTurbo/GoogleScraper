@@ -26,8 +26,8 @@ const searchHandler = async (req, res) => {
                 q: query,
                 api_key: SERP_API_KEY,
                 engine: 'google',
-                gl: 'sk',
-                hl: 'sk'
+                gl: 'cz',
+                hl: 'cz'
             }
         });
 

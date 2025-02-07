@@ -56,7 +56,7 @@ describe('POST /search', () => {
   it('should return 400 if query is empty', async () => {
     const response = await request(app)
       .post('/search')
-      .send({ query: '' });
+      .send({ query: ' ' });
 
     expect(response.status).toBe(400);
     expect(response.body.error).toBe('Query cannot be empty');

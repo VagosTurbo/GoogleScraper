@@ -97,22 +97,22 @@
     </div>
 
     <script>
-
         // get the backend URL based on the environment
         const BACKEND_URL = window.location.hostname === "localhost"
             ? "http://localhost:3000"
             : "https://googlescraper-8ku3.onrender.com";
 
-        // array to store search results
-        let searchResults = [];
-
+            
         // function to handle Enter key press
         function handleEnter(event) {
-            if (event.keyCode === 13) {  // Check if Enter is pressed
+            if (event.keyCode === 13) {
                 searchGoogle();
             }
         }
 
+        // array to store search results
+        let searchResults = [];
+            
         // function to search Google
         async function searchGoogle() {
             const query = document.getElementById('query').value;
@@ -121,30 +121,40 @@
             const spinner = document.getElementById('spinner');
             spinner.style.display = 'block';
 
-            // send search query to backend server
-            const response = await fetch(`${BACKEND_URL}/search`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query })
-            });
-            
-            if(!response.ok) {
+            try {
+                // send search query to backend server
+                const response = await fetch(`${BACKEND_URL}/search`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+
+                // check if the response is not ok
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    spinner.style.display = 'none';
+                    return alert(errorData.error || 'An error occurred');
+                }
+
+                // get search results and display them
+                searchResults = await response.json();
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = '<h2>Results:</h2>' + searchResults.map(r => 
+                    `<div class="result-item">
+                        <p><a href="${r.link}" target="_blank">${r.title}</a></p>
+                        <p>${r.snippet}</p>
+                    </div>`
+                ).join('');
+
                 spinner.style.display = 'none';
-                return alert('Error searching Google');
+            } catch (error) {
+                // catch any unexpected errors
+                spinner.style.display = 'none';
+                alert('An error occurred while searching. Please try again later.');
+                console.error('Error:', error); 
             }
-
-            // get search results and display them
-            searchResults = await response.json();
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '<h2>Results:</h2>' + searchResults.map(r => 
-                `<div class="result-item">
-                    <p><a href="${r.link}" target="_blank">${r.title}</a></p>
-                    <p>${r.snippet}</p>
-                </div>`
-            ).join('');
-
-            spinner.style.display = 'none';
         }
+
 
         // function to download search results as JSON
         function downloadResults() {
