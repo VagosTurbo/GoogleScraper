@@ -13,7 +13,11 @@ app.use(cors());
 // route handler function
 const searchHandler = async (req, res) => {
     const { query } = req.body;
-    if (!query) return res.status(400).json({ error: 'Query is required' });
+    // empty query check
+    if ( !query || query.trim() === '') return res.status(400).json({ error: 'Query cannot be empty' });
+
+    // query length check
+    if (query.length > 1000) return res.status(400).json({ error: 'Query is too long' });
 
     try {
         // fetch search results from Google using SerpApi

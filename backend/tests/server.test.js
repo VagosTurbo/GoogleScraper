@@ -50,7 +50,26 @@ describe('POST /search', () => {
       .send({});
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toBe('Query is required');
+    expect(response.body.error).toBe('Query cannot be empty');
+  });
+
+  it('should return 400 if query is empty', async () => {
+    const response = await request(app)
+      .post('/search')
+      .send({ query: '' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Query cannot be empty');
+  });
+
+  it('should return 400 if query is too long', async () => {
+    const longQuery = 'a'.repeat(1001);
+    const response = await request(app)
+      .post('/search')
+      .send({ query: longQuery });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Query is too long');
   });
 
   it('should return 500 if there is an error in the search request', async () => {
