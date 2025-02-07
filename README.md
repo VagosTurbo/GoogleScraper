@@ -4,7 +4,7 @@ https://vagosturbo.github.io/GoogleScraper/
 
 GoogleScraper je webová aplikácia, ktorá umožňuje používateľom vyhľadávať na Google a získať výsledky vyhľadávania. Aplikácia pozostáva z backendového servera, ktorý spracováva požiadavky na vyhľadávanie, a frontendového rozhrania, kde môžu používatelia zadávať svoje vyhľadávacie dotazy a zobrazovať výsledky.
 
-## Note 
+## Note ⚠️
 Pri prvom spustení a vyhľadaní prvého dotazu je potrebné chvíľu počkať, kým sa backendový server "prebudí". Keďže je hostovaný zadarmo, môže to trvať až minútu, no po tejto dobe by už malo byť všetko v poriadku.
 
 ## Funkcie
