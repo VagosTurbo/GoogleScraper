@@ -89,7 +89,7 @@
 <body>
     <div class="container">
         <h1>Google Search Scraper</h1>
-        <input type="text" id="query" placeholder="Enter search term">
+        <input type="text" id="query" placeholder="Enter search term" onkeydown="handleEnter(event)">
         <button class="search-btn" onclick="searchGoogle()">Search</button>
         <button class="download-btn" onclick="downloadResults()">Download JSON</button>
         <div class="spinner" id="spinner"></div>
@@ -97,8 +97,21 @@
     </div>
 
     <script>
+
+        // get the backend URL based on the environment
+        const BACKEND_URL = window.location.hostname === "localhost"
+            ? "http://localhost:3000"
+            : "https://googlescraper-8ku3.onrender.com";
+
         // array to store search results
         let searchResults = [];
+
+        // function to handle Enter key press
+        function handleEnter(event) {
+            if (event.keyCode === 13) {  // Check if Enter is pressed
+                searchGoogle();
+            }
+        }
 
         // function to search Google
         async function searchGoogle() {
@@ -109,11 +122,16 @@
             spinner.style.display = 'block';
 
             // send search query to backend server
-            const response = await fetch('https://googlescraper-8ku3.onrender.com/search', {
+            const response = await fetch(`${BACKEND_URL}/search`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query })
             });
+            
+            if(!response.ok) {
+                spinner.style.display = 'none';
+                return alert('Error searching Google');
+            }
 
             // get search results and display them
             searchResults = await response.json();
@@ -132,7 +150,7 @@
         function downloadResults() {
             // check if there are any results to download
             if (searchResults.length === 0) return alert('No results to download');
-            // create a Blob object with the search results
+            // create a Blob object with the search results and download it
             const blob = new Blob([JSON.stringify(searchResults, null, 2)], { type: 'application/json' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);

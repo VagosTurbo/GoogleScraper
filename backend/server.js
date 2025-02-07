@@ -27,6 +27,10 @@ const searchHandler = async (req, res) => {
             }
         });
 
+        if(response.data.error) {
+            return res.status(500).json({ error: response.data.error });
+        }
+
         // extract relevant fields from search results
         const results = response.data.organic_results.map(r => ({
             title: r.title,
